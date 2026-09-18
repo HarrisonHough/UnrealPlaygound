@@ -8,6 +8,9 @@
 #include "Components/Button.h"
 #include "AsteroidMenuButton.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAsteroidButtonClicked, UAsteroidMenuButton*, Button);
+
 /**
  * 
  */
@@ -27,7 +30,14 @@ public:
 	int32 FontSize = 24;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button")
-	FVector4 TextPadding = FVector4(2.0f, 2.0f, 2.0f, 2.0f);
+	FMargin TextPadding;
+	
+	UPROPERTY(BlueprintAssignable, Category="Button")
+	FOnAsteroidButtonClicked OnClicked;
+	
+protected:
+
+	virtual void NativeOnInitialized() override;
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Label;
@@ -35,7 +45,12 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Button;
 	
-protected:
+
 	virtual void NativePreConstruct() override;
+	
+	
+private:
+	UFUNCTION()
+	void HandleButtonClicked();
 	
 };
